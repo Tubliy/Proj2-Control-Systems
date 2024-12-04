@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 
 def calculate_microphone_intensities(sp, mp):
     """
     Calculate microphone intensities based on the source position.
     Args:
-        source_position: (x, y) coordinates of the sound source.
-        mic_positions: List of (x, y) coordinates of microphone positions.
+        sp: (x, y) coordinates of the sound source.
+        mp: List of (x, y) coordinates of microphone positions.
     Returns:
         List of intensities for each microphone.
     """
@@ -23,7 +24,7 @@ def determine_camera_angle(intensities, mp):
     Determine the camera angle based on microphone intensities.
     Args:
         intensities: List of microphone intensities.
-        mic_positions: List of (x, y) coordinates of microphone positions.
+        mp: List of (x, y) coordinates of microphone positions.
     Returns:
         (angle, magnitude): Angle in degrees and magnitude for camera direction.
     """
@@ -38,8 +39,8 @@ def visualize_camera_direction(room_size, sp, mp, intensities):
     Visualize the room, sound source, microphones, and camera direction.
     Args:
         room_size: Tuple of (width, height) of the room.
-        source_position: (x, y) coordinates of the sound source.
-        mic_positions: List of (x, y) coordinates of microphone positions.
+        sp: (x, y) coordinates of the sound source.
+        mp: List of (x, y) coordinates of microphone positions.
         intensities: List of microphone intensities.
     """
     angle, magnitude = determine_camera_angle(intensities, mp)
@@ -73,16 +74,47 @@ def visualize_camera_direction(room_size, sp, mp, intensities):
     plt.show()
 
 
+def feedback_loop(room_size, mp, initial_sp, iterations=10, delay=1):
+    """
+    Simulates a feedback loop where the sound source moves over time.
+    Args:
+        room_size: Tuple of (width, height) of the room.
+        mp: List of microphone positions.
+        initial_sp: Initial position of the sound source.
+        iterations: Number of updates to simulate.
+        delay: Time delay between updates (in seconds).
+    """
+    current_sp = initial_sp  # Start with the initial position
+    
+    for i in range(iterations):
+        print(f"Iteration {i+1}:")
+        
+        # Calculate microphone intensities
+        intensities = calculate_microphone_intensities(current_sp, mp)
+        
+        # Determine camera direction
+        angle, magnitude = determine_camera_angle(intensities, mp)
+        print(f"Camera Direction: Angle = {angle:.2f}°, Magnitude = {magnitude:.2f}")
+        
+        # Visualize the current state
+        visualize_camera_direction(room_size, current_sp, mp, intensities)
+        
+        # Simulate sound source movement (e.g., move right by 1 unit)
+        current_sp = (current_sp[0] + 1, current_sp[1])  # Change this to customize movement
+        
+        time.sleep(delay)  # Wait for the next update
+
+
 def main():
     # Room dimensions
     room_width = float(input("Enter the room width: "))
     room_height = float(input("Enter the room height: "))
     room_size = (room_width, room_height)
 
-    # Source position
-    source_x = float(input("Enter the sound source X position: "))
-    source_y = float(input("Enter the sound source Y position: "))
-    sp = (source_x, source_y)
+    # Initial source position
+    source_x = float(input("Enter the initial sound source X position: "))
+    source_y = float(input("Enter the initial sound source Y position: "))
+    initial_sp = (source_x, source_y)
 
     # Microphone positions (corners of the room)
     mp = [
@@ -92,11 +124,10 @@ def main():
         (room_width / 2, -room_height / 2)  # Back-right
     ]
 
-    # Calculate intensities based on source position
-    intensities = calculate_microphone_intensities(sp, mp)
-
-    # Visualize the room, microphones, source, and camera direction
-    visualize_camera_direction(room_size, sp, mp, intensities)
+    # Simulate feedback loop
+    iterations = int(input("Enter the number of iterations for the feedback loop: "))
+    delay = float(input("Enter the delay (in seconds) between iterations: "))
+    feedback_loop(room_size, mp, initial_sp, iterations, delay)
 
 
 if __name__ == "__main__":
