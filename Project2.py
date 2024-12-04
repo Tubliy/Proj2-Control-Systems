@@ -4,14 +4,7 @@ import time
 
 
 def calculate_microphone_intensities(sp, mp):
-    """
-    Calculate microphone intensities based on the source position.
-    Args:
-        sp: (x, y) coordinates of the sound source.
-        mp: List of (x, y) coordinates of microphone positions.
-    Returns:
-        List of intensities for each microphone.
-    """
+    
     distances = [np.linalg.norm(np.array(sp) - np.array(mic)) for mic in mp]
     # Inverse square law for intensity (closer microphones have higher intensity)
     intensities = [1 / (d**2 + 1e-6) for d in distances]  # Avoid division by zero
@@ -20,14 +13,7 @@ def calculate_microphone_intensities(sp, mp):
 
 
 def determine_camera_angle(intensities, mp):
-    """
-    Determine the camera angle based on microphone intensities.
-    Args:
-        intensities: List of microphone intensities.
-        mp: List of (x, y) coordinates of microphone positions.
-    Returns:
-        (angle, magnitude): Angle in degrees and magnitude for camera direction.
-    """
+   
     sound_source = np.dot(intensities, mp)
     angle = np.degrees(np.arctan2(sound_source[1], sound_source[0]))
     magnitude = np.linalg.norm(sound_source)
@@ -35,14 +21,7 @@ def determine_camera_angle(intensities, mp):
 
 
 def visualize_camera_direction(room_size, sp, mp, intensities):
-    """
-    Visualize the room, sound source, microphones, and camera direction.
-    Args:
-        room_size: Tuple of (width, height) of the room.
-        sp: (x, y) coordinates of the sound source.
-        mp: List of (x, y) coordinates of microphone positions.
-        intensities: List of microphone intensities.
-    """
+   
     angle, magnitude = determine_camera_angle(intensities, mp)
     width, height = room_size
 
@@ -75,15 +54,7 @@ def visualize_camera_direction(room_size, sp, mp, intensities):
 
 
 def feedback_loop(room_size, mp, initial_sp, iterations=10, delay=1):
-    """
-    Simulates a feedback loop where the sound source moves over time.
-    Args:
-        room_size: Tuple of (width, height) of the room.
-        mp: List of microphone positions.
-        initial_sp: Initial position of the sound source.
-        iterations: Number of updates to simulate.
-        delay: Time delay between updates (in seconds).
-    """
+   
     current_sp = initial_sp  # Start with the initial position
     
     for i in range(iterations):
