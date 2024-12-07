@@ -31,7 +31,7 @@ def visualize_camera_direction(room_size, mp, intensities, sp_estimate, true_sp)
 
     # Plot microphone positions
     for i, mic in enumerate(mp):
-        plt.scatter(mic[0], mic[1], color='blue', label=f'Mic {i+1}' if i == 0 else None)
+        plt.scatter(mic[0], mic[1], color='blue', label=f'Mic' if i == 0 else None)
         plt.text(mic[0], mic[1] + 0.2, f'Mic {i+1} (Intensity: {intensities[i]:.2f})', fontsize=10, ha='center')
 
     # Plot estimated source position
