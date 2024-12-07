@@ -4,9 +4,6 @@ import time
 
 
 def estimate_source_position(mp, intensities):
-    """
-    Estimate the source position using a weighted average based on microphone intensities.
-    """
     # Weighted centroid formula: Position = Σ(intensity * mic_position) / Σ(intensity)
     weighted_positions = np.array([intensity * np.array(mic) for intensity, mic in zip(intensities, mp)])
     source_position = np.sum(weighted_positions, axis=0) / np.sum(intensities)
@@ -14,9 +11,6 @@ def estimate_source_position(mp, intensities):
 
 
 def calculate_microphone_intensities(mp, sp_estimate):
-    """
-    Calculate intensities based on estimated source position (sp_estimate) and microphone positions.
-    """
     # Use the inverse square law to estimate intensities
     distances = [np.linalg.norm(np.array(sp_estimate) - np.array(mic)) for mic in mp]
     intensities = [1 / (d**2 + 1e-6) for d in distances]  # Avoid division by zero
@@ -25,10 +19,7 @@ def calculate_microphone_intensities(mp, sp_estimate):
 
 
 def visualize_camera_direction(room_size, mp, intensities, sp_estimate, true_sp):
-    """
-    Visualize the current state of the system, including the estimated and true source positions,
-    and the camera direction.
-    """
+
     width, height = room_size
     camera_position = (0, 0)  # Camera is at the center of the room
 
@@ -73,9 +64,7 @@ def visualize_camera_direction(room_size, mp, intensities, sp_estimate, true_sp)
 
 
 def feedback_loop(room_size, mp, true_sp, iterations=10, delay=1):
-    """
-    Feedback loop to simulate microphone readings and estimate the sound source position.
-    """
+    
     sp_estimate = (0, 0)  # Start with an initial guess for the source position
 
     for i in range(iterations):
